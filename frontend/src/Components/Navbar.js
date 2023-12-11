@@ -1,8 +1,6 @@
 import React from 'react';
 import Logo from '../images/donation.png';
-import { SelectMenu, Button } from 'evergreen-ui'
 export default function Navbar() {
-    const [selected, setSelected] = React.useState(null)
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#FF5001" }}>
             <div className="container-fluid">
@@ -18,21 +16,6 @@ export default function Navbar() {
                         <li className="nav-item">
                             <a className="nav-link" style={{ color: "#EFEFEF" }} href="#">Browse Fundraisers</a>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link">
-                            <SelectMenu
-                                title="Select"
-                                options={['Medical', 'Education', 'Sports', 'Child Welfare', 'Animal'].map((label) => ({ label, value: label }))}
-                                width={280}
-                                height={200}
-                                selected={selected}
-                                onSelect={(item) => setSelected(item.value)}
-                            >
-                                <Button>{selected || 'Fundraise For'}</Button>
-                            </SelectMenu>
-                            </a>
-                        </li>
-
                         <li className="nav-item">
                             <a className="nav-link" style={{ color: "#EFEFEF" }} href="#">About us</a>
                         </li>
