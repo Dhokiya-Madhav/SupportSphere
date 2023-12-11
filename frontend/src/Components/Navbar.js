@@ -1,5 +1,6 @@
 import React from 'react';
 import Logo from '../images/donation.png';
+import {Link} from 'react-router-dom';
 export default function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#FF5001" }}>
@@ -7,7 +8,7 @@ export default function Navbar() {
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <a className="navbar-brand" href="#"><img src={Logo} className='img-fluid' height={50} width={50} /></a>
+                <a className="navbar-brand" href="#"><Link to='/'><img src={Logo} className='img-fluid' height={50} width={50} /></Link></a>
                 <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
@@ -21,7 +22,8 @@ export default function Navbar() {
                         </li>
                     </ul>
                     <form className="d-flex" role="search">
-                        <button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark' type="submit">Start a Fundraiser</button>
+                        <Link to='/raiseFund'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark' type="submit">Start a Fundraiser</button></Link>
+                        <Link to='/login'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark ms-2' type="submit">Login</button></Link>
                     </form>
                 </div>
             </div>
