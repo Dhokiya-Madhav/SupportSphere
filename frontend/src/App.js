@@ -6,6 +6,7 @@ import Home from './Components/Home';
 import StepForm from './Components/fundRaiserForm';
 import SignUp from './Components/signUp';
 import LoginPage from './Components/Login';
+import UserProfile from './Components/userProfile';
 function App() {
   return (
     <BrowserRouter>
@@ -15,6 +16,7 @@ function App() {
         <Route element={<StepForm/>} path='/raiseFund'/>
         <Route element={<SignUp/>} path='/signUp'/>
         <Route element={<LoginPage/>} path='/login'/>
+        <Route element={<UserProfile/>} path='/myprofile'/>
       </Routes>
     </BrowserRouter>
   );
