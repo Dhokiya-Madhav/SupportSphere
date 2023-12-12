@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Logo from '../images/donation.png';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 export default function Navbar() {
+    
+    var button1;
+    const userEmail = sessionStorage.getItem("userEmail");
+    console.log(userEmail);
+    if (userEmail) {
+        console.log('Here');
+        button1 = <Link to='/myprofile'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark ms-2'>My Profile</button></Link>;
+    } else {
+        button1 = <Link to='/login'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark ms-2' type="submit">Login</button></Link>;
+    }
+
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#FF5001" }}>
             <div className="container-fluid">
@@ -23,7 +34,8 @@ export default function Navbar() {
                     </ul>
                     <form className="d-flex" role="search">
                         <Link to='/raiseFund'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark' type="submit">Start a Fundraiser</button></Link>
-                        <Link to='/login'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark ms-2' type="submit">Login</button></Link>
+                        {/* <Link to='/login'><button style={{ backgroundColor: "", color: "#EFEFEF" }} className='btn btn-outline-dark ms-2' type="submit">Login</button></Link>*/}
+                        {button1}
                     </form>
                 </div>
             </div>
