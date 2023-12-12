@@ -19,11 +19,11 @@ app.use(bodyParser.json())
 
 mongoose.connect(
 
-    "mongodb+srv://madhavdhokiya7069:JxnEYkaLpxUEOivb@cluster0.a1jkqnw.mongodb.net/Support-Sphere?retryWrites=true&w=majority",
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }
+  "mongodb+srv://madhavdhokiya7069:JxnEYkaLpxUEOivb@cluster0.a1jkqnw.mongodb.net/Support-Sphere?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
 );
 
 const { user } = require("./models/user.js")
@@ -33,27 +33,49 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", mongoConnected);
 
 function mongoConnected() {
-    console.log("Database connected");
+  console.log("Database connected");
 
-    app.post('/signup', async (req, res) => {
-        try {
-          const hashedPassword = await bcrypt.hash(req.body.password, 10);
-          const newUser = new user({
-            username: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
-            city: req.body.city,
-            phoneNumber: req.body.phoneNumber,
-          });
-          const savedUser = await newUser.save();
-          res.json(savedUser);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: 'Internal Server Error' });
-        }
+  app.post('/signup', async (req, res) => {
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const newUser = new user({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        city: req.body.city,
+        phoneNumber: req.body.phoneNumber,
       });
+      const savedUser = await newUser.save();
+      res.json(savedUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+      
+      const user1 = await user.findOne({ email });
+      if (!user1) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      const isPasswordValid = await bcrypt.compare(password, user1.password);
+
+      if (isPasswordValid) {
+        return res.status(200).json({ message: "Login successful" ,data:{email:email}});
+      } else {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 }
 
 app.listen(port, () => {
-    console.log(`Now listening on port ${port}`);
+  console.log(`Now listening on port ${port}`);
 });
