@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function UserProfile() {
@@ -12,7 +12,18 @@ export default function UserProfile() {
     });
 
     const [errors, setErrors] = useState({});
-
+    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        fetch("https//localhost:5000/user-profile/"+sessionStorage.getItem('userEmail'), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => setFormData(data))
+            .catch((error) => console.error("Error fetching user data:", error));
+    }, []);
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -72,7 +83,7 @@ export default function UserProfile() {
         <div className="container mt-2">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    <div className="card" style={{ boxShadow: '0 4px 20px rgba(100,100,100)', border:'0px', padding: '20px' }}>
+                    <div className="card" style={{ boxShadow: '0 4px 20px rgba(100,100,100)', border: '0px', padding: '20px' }}>
                         <div className="card-header">
                             <center><h2>User Profile</h2></center>
                         </div>
@@ -95,6 +106,7 @@ export default function UserProfile() {
                                     <input type="password" className={`form-control ${errors.password && 'is-invalid'}`} id="password" name="password" value={formData.password} onChange={handleChange} required />
                                     {errors.password && <div className="invalid-feedback">{errors.password}</div>}
                                 </div>
+
                                 <div className="mb-3">
                                     <label htmlFor="city" className="form-label">City</label>
                                     <input type="text" className={`form-control ${errors.city && 'is-invalid'}`} id="city" name="city" value={formData.city} onChange={handleChange} required />
@@ -107,7 +119,9 @@ export default function UserProfile() {
                                     {errors.phoneNumber && <div className="invalid-feedback">{errors.phoneNumber}</div>}
                                 </div>
 
-                                <button type="submit" className="btn btn-outline-dark">Update Profile</button>
+                                <button type="submit" className="btn btn-outline-dark">
+                                    {isLoading ? "Updating..." : "Update Profile"}
+                                </button>
                             </form>
                         </div>
                     </div>
