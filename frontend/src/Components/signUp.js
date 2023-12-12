@@ -12,6 +12,7 @@ export default function SignUp() {
     });
 
     const [errors, setErrors] = useState({});
+    
 
     const handleChange = (e) => {
         setFormData({
@@ -20,14 +21,37 @@ export default function SignUp() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = validateForm(formData);
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             // Form is valid, you can perform further actions (e.g., submit to a server)
-            console.log("Form submitted:", formData);
+            //console.log("Form submitted:", formData);
+            try {
+                // Send the user data to the server using fetch
+                const response = await fetch("http://localhost:5000/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log("User successfully registered:", responseData);
+                    alert("User successfully registered");
+                    window.location="http://localhost:3000/login"
+                    
+                } else {
+                    console.error("Failed to register user");
+                    alert("Failed to register user");
+                }
+            } catch (error) {
+                console.error("Error during fetch:", error);
+            }
         } else {
             // Form has errors, handle them accordingly
             console.log("Form has errors:", newErrors);
@@ -73,7 +97,7 @@ export default function SignUp() {
         <div className="container mt-2">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    <div className="card" style={{ boxShadow: '0 4px 20px rgba(100,100,100)', border:'0px', padding: '20px' }}>
+                    <div className="card" style={{ boxShadow: '0 4px 20px rgba(100,100,100)', border: '0px', padding: '20px' }}>
                         <div className="card-header">
                             <center><h2>Sign Up</h2></center>
                         </div>
