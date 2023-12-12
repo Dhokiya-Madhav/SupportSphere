@@ -20,7 +20,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-2" style={{maxWidth:'900px'}}>
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card" style={{ boxShadow: '0 4px 20px rgba(100,100,100)', border:'0px', padding: '20px' }}>
