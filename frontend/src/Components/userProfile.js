@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function UserProfile() {
@@ -14,14 +14,17 @@ export default function UserProfile() {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
-        fetch("https//localhost:5000/user-profile/"+sessionStorage.getItem('userEmail'), {
+        fetch("http://localhost:5000/user-profile/" + sessionStorage.getItem('userEmail'), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
         })
             .then((response) => response.json())
-            .then((data) => setFormData(data))
+            .then((data) => {
+                
+                setFormData(data)
+            })
             .catch((error) => console.error("Error fetching user data:", error));
     }, []);
     const handleChange = (e) => {
@@ -31,14 +34,39 @@ export default function UserProfile() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const logout = (e)=>{
+        e.preventDefault();
+        sessionStorage.clear();
+        window.location="http://localhost:3000/";
+    }
+    const handleSubmit = async(e) => {
         e.preventDefault();
         const newErrors = validateForm(formData);
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            // Form is valid, you can perform further actions (e.g., submit to a server)
             console.log("Form submitted:", formData);
+            try {
+                setIsLoading(true);
+                const response = await fetch(`http://localhost:5000/user-profile-update/${sessionStorage.getItem('userEmail')}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    console.log('User profile updated successfully');
+                    sessionStorage.setItem('userEmail',formData.email)
+                } else {
+                    console.error('Error updating user profile:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error updating user profile:', error);
+            } finally {
+                setIsLoading(false);
+            }
         } else {
             // Form has errors, handle them accordingly
             console.log("Form has errors:", newErrors);
@@ -58,24 +86,17 @@ export default function UserProfile() {
             errors.email = "Email address is invalid";
         }
 
-        if (!data.password.trim()) {
-            errors.password = "Password is required";
-        }
-
-        if (data.password !== data.confirmPassword) {
-            errors.confirmPassword = "Passwords do not match";
-        }
-
         if (!data.city.trim()) {
             errors.city = "City is required";
         }
 
+        /*
         if (!data.phoneNumber.trim()) {
             errors.phoneNumber = "Phone Number is required";
         } else if (!/^\d{10}$/.test(data.phoneNumber)) {
             errors.phoneNumber = "Phone Number must be 10 digits";
         }
-
+        */
         return errors;
     };
 
@@ -102,12 +123,6 @@ export default function UserProfile() {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">Password</label>
-                                    <input type="password" className={`form-control ${errors.password && 'is-invalid'}`} id="password" name="password" value={formData.password} onChange={handleChange} required />
-                                    {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                                </div>
-
-                                <div className="mb-3">
                                     <label htmlFor="city" className="form-label">City</label>
                                     <input type="text" className={`form-control ${errors.city && 'is-invalid'}`} id="city" name="city" value={formData.city} onChange={handleChange} required />
                                     {errors.city && <div className="invalid-feedback">{errors.city}</div>}
@@ -122,6 +137,7 @@ export default function UserProfile() {
                                 <button type="submit" className="btn btn-outline-dark">
                                     {isLoading ? "Updating..." : "Update Profile"}
                                 </button>
+                                <button className="btn btn-outline-dark ms-2" onClick={logout}>Logout</button>
                             </form>
                         </div>
                     </div>

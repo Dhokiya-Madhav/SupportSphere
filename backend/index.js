@@ -57,7 +57,7 @@ function mongoConnected() {
     const { email, password } = req.body;
 
     try {
-      
+
       const user1 = await user.findOne({ email });
       if (!user1) {
         return res.status(401).json({ message: "Invalid email or password" });
@@ -65,13 +65,50 @@ function mongoConnected() {
       const isPasswordValid = await bcrypt.compare(password, user1.password);
 
       if (isPasswordValid) {
-        return res.status(200).json({ message: "Login successful" ,data:{email:email}});
+        return res.status(200).json({ message: "Login successful", data: { email: email } });
       } else {
         return res.status(401).json({ message: "Invalid email or password" });
       }
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get('/user-profile/:email', async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const userGet = await user.findOne({ email: userEmail });
+
+      if (!userGet) {
+        return res.status(404).json({ status: 'error', error: 'User not found' });
+      }
+      res.status(200).json({
+        username: userGet.username,
+        email: userGet.email,
+        city: userGet.city,
+        phoneNumber: userGet.phoneNumber,
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+  });
+
+  app.put('/user-profile-update/:email', async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const updatedData = req.body;
+      const result = await user.findOneAndUpdate({ email: userEmail }, updatedData, { new: true });
+
+      if (!result) {
+        return res.status(404).json({ status: 'error', error: 'User not found' });
+      }
+
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      res.status(500).json({ status: 'error', error: 'Internal Server Error' });
     }
   });
 }
