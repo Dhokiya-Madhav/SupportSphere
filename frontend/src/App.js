@@ -7,6 +7,7 @@ import StepForm from './Components/fundRaiserForm';
 import SignUp from './Components/signUp';
 import LoginPage from './Components/Login';
 import UserProfile from './Components/userProfile';
+import UserFundRaiser from './Components/userFundRaiser';
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +18,7 @@ function App() {
         <Route element={<SignUp/>} path='/signUp'/>
         <Route element={<LoginPage/>} path='/login'/>
         <Route element={<UserProfile/>} path='/myprofile'/>
+        <Route element={<UserFundRaiser/>} path='/myfundraiser'/>
       </Routes>
     </BrowserRouter>
   );
