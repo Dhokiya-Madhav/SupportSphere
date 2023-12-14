@@ -138,6 +138,7 @@ export default function UserProfile() {
                                     {isLoading ? "Updating..." : "Update Profile"}
                                 </button>
                                 <button className="btn btn-outline-dark ms-2" onClick={logout}>Logout</button>
+                                <Link to='/myfundraiser'><button className="btn btn-outline-dark ms-2">My Fundraisers</button></Link>
                             </form>
                         </div>
                     </div>
