@@ -1,29 +1,20 @@
-import React, { useState } from 'react';
-import { SelectMenu, Button } from 'evergreen-ui'
+import React, { useEffect, useState } from 'react';
+import { SelectMenu, Button,Alert } from 'evergreen-ui'
 const StepForm = () => {
   const [step, setStep] = useState(1);
   const [patient, setSelected] = React.useState(null)
   const [empStatus, setEmpStatus] = React.useState(null)
   const [medicalCondition, setMedicalCondition] = React.useState(null)
-  const [patientImg, setImage] = useState("");
-
-  function convertToBase64(e) {
-    var reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onload = () => {
-      setImage(reader.result);
-    };
-    reader.onerror = error => {
-      console.log(error);
-    }
-  }
+  const [image1, setImage] = useState("");
+  const [usrEmail, setUsrEmail] = useState(sessionStorage.getItem('userEmail'));
   const [formData, setFormData] = useState({
     fundRaiser: {
       amount: '',
       fundRaiserTitle: '',
       fundRaiseFor: '',
       employmentStatus: '',
-      image: patientImg
+      image: image1,
+      urEmail: usrEmail
     },
     patientDetails: {
       Name: '',
@@ -35,8 +26,72 @@ const StepForm = () => {
     whyFundRaiser: {
       story: '',
       gdrive: ''
-    }
+    },
   });
+
+  useEffect(() => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      fundRaiser: {
+        ...prevFormData.fundRaiser,
+        urEmail: usrEmail
+      }
+    }));
+  }, []);
+
+  function convertToBase64(e) {
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.onerror = error => {
+      console.log(error);
+    }
+  }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const imageData = reader.result;
+        setImage(imageData);
+
+        setFormData((prevData) => ({
+          ...prevData,
+          fundRaiser: {
+            ...prevData.fundRaiser,
+            image: imageData,
+          },
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const saveFormDataToMongoDB = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/submitFundRaiser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Data submitted successfully...!")
+      } else {
+        console.log('Error occured try again later');
+      }
+    } catch (error) {
+      console.error('Error saving form data to MongoDB Atlas:', error);
+    }
+  };
 
   const nextStep = () => {
     setStep(step + 1);
@@ -113,7 +168,7 @@ const StepForm = () => {
 
             <div className="mb-3">
               <label className="form-label">Add image of the patient(Optional)</label>
-              <input type="file" accept="image/*" onChange={convertToBase64} className="form-control" required />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="form-control" required />
             </div>
             <button className="btn btn-outline-dark" onClick={nextStep}>Next</button>
           </div>
@@ -196,6 +251,7 @@ const StepForm = () => {
                 onChange={(e) => handleChange('whyFundRaiser', 'gdrive', e.target.value)}
               />
             </div>
+
             <button className="btn btn-secondary me-2" onClick={prevStep}>Previous</button>
             <button className="btn btn-outline-dark" onClick={nextStep}>Next</button>
           </div>
@@ -204,12 +260,12 @@ const StepForm = () => {
         return (
           <div className="container mt-3" style={{ maxWidth: '600px' }}>
             <h2>Step 4: Confirmation</h2>
-
             <h3>Fundraiser Details: </h3>
             <p><strong>Amount that you want to raise:</strong> {formData.fundRaiser.amount}</p>
             <p><strong>Fundraiser Title:</strong> {formData.fundRaiser.fundRaiserTitle}</p>
             <p><strong>Fundraise for:</strong> {formData.fundRaiser.fundRaiseFor}</p>
             <p><strong>Your employment status:</strong> {formData.fundRaiser.employmentStatus}</p>
+            <p><strong>Image:</strong><br></br><img src={formData.fundRaiser.image} height={200} width={200} /></p>
             <hr></hr>
             <h3>Patient Details: </h3>
             <p><strong>Name:</strong> {formData.patientDetails.Name}</p>
@@ -220,12 +276,12 @@ const StepForm = () => {
             <hr></hr>
             <h3>Message: </h3>
             <p>{formData.whyFundRaiser.story}</p>
-            
+
             <hr></hr>
             <h3>Link: </h3>
             <p><a href={formData.whyFundRaiser.gdrive}>Document link</a></p>
             <button className="btn btn-secondary me-2" onClick={prevStep}>Previous</button>
-            <button className="btn btn-outline-dark" onClick={() => alert('Form submitted!')}>Submit</button>
+            <button className="btn btn-outline-dark" onClick={saveFormDataToMongoDB}>Submit</button>
           </div>
 
         );
