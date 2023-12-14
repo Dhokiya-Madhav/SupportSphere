@@ -27,6 +27,7 @@ mongoose.connect(
 );
 
 const { user } = require("./models/user.js")
+const { fundRaiser } = require("./models/fundRaiserDetails.js")
 
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -111,6 +112,34 @@ function mongoConnected() {
       res.status(500).json({ status: 'error', error: 'Internal Server Error' });
     }
   });
+
+  app.post('/submitFundRaiser', async (req, res) => {
+    const formData = req.body;
+    try {
+      const savedFormData = await fundRaiser.create(formData);
+      res.status(200).json({ message: 'Form data saved successfully', data: savedFormData });
+    } catch (error) {
+      console.error('Error saving form data to MongoDB Atlas:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.get("/myfundraiser/:urEmail", async (req, res) => {
+    try {
+      const urEmail = req.params.urEmail;
+      const fundraisers = await fundRaiser.find({ "fundRaiser.urEmail": urEmail });
+
+      if (!fundraisers || fundraisers.length === 0) {
+        return res.status(404).json({ error: "Fundraisers not found for the given urEmail" });
+      }
+
+      res.json(fundraisers);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
 }
 
 app.listen(port, () => {
