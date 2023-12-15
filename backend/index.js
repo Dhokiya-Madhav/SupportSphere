@@ -140,6 +140,21 @@ function mongoConnected() {
     }
   });
 
+  app.get('/fund-raiser/:id', async (req, res) => {
+    const fundRaiserId = req.params.id;
+    try {
+        const result = await fundRaiser.findById(fundRaiserId);
+        
+        if (!result) {
+            return res.status(404).json({ error: 'Fund raiser not found' });
+        }
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 }
 
 app.listen(port, () => {
