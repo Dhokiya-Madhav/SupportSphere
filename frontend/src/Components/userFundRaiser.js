@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button, Card, Image } from 'semantic-ui-react'
 
 export default function UserFundRaiser() {
@@ -42,9 +43,11 @@ export default function UserFundRaiser() {
                     </Card.Content>
                     <Card.Content extra>
                         <div className='ui two buttons'>
-                            <Button basic color='green' >
+                            <Link to='/fundraiser' state={{id:fundraiser._id}}>
+                            <Button basic color='green'>
                                 More Details
                             </Button>
+                            </Link>
                         </div>
                     </Card.Content>
                 </Card>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SelectMenu, Button,Alert } from 'evergreen-ui'
+import { SelectMenu, Button, Alert } from 'evergreen-ui'
 const StepForm = () => {
   const [step, setStep] = useState(1);
   const [patient, setSelected] = React.useState(null)
@@ -27,6 +27,12 @@ const StepForm = () => {
       story: '',
       gdrive: ''
     },
+    paymentDetails: {
+      bankName: '',
+      accountNo: '',
+      ifscCode: '',
+      upiId: '',
+    }
   });
 
   useEffect(() => {
@@ -115,7 +121,7 @@ const StepForm = () => {
     switch (step) {
       case 1:
         return (
-          <div className="container mt-3" style={{ maxWidth: '600px' }}>
+          <div className="container mt-3" style={{ maxWidth: '600px',boxShadow: '0 4px 20px rgba(100,100,100)' ,padding: '20px',borderRadius:'10px' }}>
             <h2>Step 1: Tell us more about yout Fundraiser</h2>
             <div className="mb-3">
               <label className="form-label">How much do you want to raise? *</label>
@@ -175,7 +181,7 @@ const StepForm = () => {
         );
       case 2:
         return (
-          <div className="container mt-3" style={{ maxWidth: '600px' }}>
+          <div className="container mt-3" style={{ maxWidth: '600px',boxShadow: '0 4px 20px rgba(100,100,100)' ,padding: '20px',borderRadius:'10px'  }}>
             <h2>Step 2: Tell us about the patient</h2>
             <div className="mb-3">
               <label className="form-label">Name *</label>
@@ -236,7 +242,7 @@ const StepForm = () => {
         );
       case 3:
         return (
-          <div className="container mt-3" style={{ maxWidth: '600px' }}>
+          <div className="container mt-3" style={{ maxWidth: '600px',boxShadow: '0 4px 20px rgba(100,100,100)' ,padding: '20px',borderRadius:'10px'  }}>
             <h2>Step 3: Tell the story about why you are running a Fundraiser </h2>
             <div className="mb-3">
               <textarea className='form-control' rows={10} value={formData.whyFundRaiser.story} onChange={(e) => handleChange('whyFundRaiser', 'story', e.target.value)}></textarea>
@@ -258,8 +264,53 @@ const StepForm = () => {
         );
       case 4:
         return (
-          <div className="container mt-3" style={{ maxWidth: '600px' }}>
-            <h2>Step 4: Confirmation</h2>
+          <div className="container mt-3" style={{ maxWidth: '600px',boxShadow: '0 4px 20px rgba(100,100,100)' ,padding: '20px',borderRadius:'10px'  }}>
+            <h2>Step 4: Payment Details </h2>
+
+            <div className="mb-3">
+              <label className="form-label">Bank Name</label>
+              <input
+                type="text"
+                className="form-control"
+                value={formData.paymentDetails.bankName}
+                onChange={(e) => handleChange('paymentDetails', 'bankName', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Account No</label>
+              <input
+                type="number"
+                className="form-control"
+                value={formData.paymentDetails.accountNo}
+                onChange={(e) => handleChange('paymentDetails', 'accountNo', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">IFSC Code</label>
+              <input
+                type="text"
+                className="form-control"
+                value={formData.paymentDetails.ifscCode}
+                onChange={(e) => handleChange('paymentDetails', 'ifscCode', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">UPI Id</label>
+              <input
+                type="text"
+                className="form-control"
+                value={formData.paymentDetails.upiId}
+                onChange={(e) => handleChange('paymentDetails', 'upiId', e.target.value)}
+              />
+            </div>
+            <button className="btn btn-secondary me-2" onClick={prevStep}>Previous</button>
+            <button className="btn btn-outline-dark" onClick={nextStep}>Next</button>
+          </div>
+        )
+      case 5:
+        return (
+          <div className="container mt-3" style={{ maxWidth: '600px' ,boxShadow: '0 4px 20px rgba(100,100,100)' ,padding: '20px',borderRadius:'10px' }}>
+            <h2>Step 5: Confirmation</h2>
             <h3>Fundraiser Details: </h3>
             <p><strong>Amount that you want to raise:</strong> {formData.fundRaiser.amount}</p>
             <p><strong>Fundraiser Title:</strong> {formData.fundRaiser.fundRaiserTitle}</p>
@@ -273,6 +324,12 @@ const StepForm = () => {
             <p><strong>Medical Condition:</strong> {formData.patientDetails.condition}</p>
             <p><strong>Hospital Name:</strong> {formData.patientDetails.hospitalName}</p>
             <p><strong>City:</strong> {formData.patientDetails.city}</p>
+            <hr></hr>
+            <h3>Payment Details: </h3>
+            <p><strong>Bank Name: </strong> {formData.paymentDetails.bankName}</p>
+            <p><strong>Account No: </strong> {formData.paymentDetails.accountNo}</p>
+            <p><strong>IFSC Code:</strong> {formData.paymentDetails.ifscCode}</p>
+            <p><strong>UPI Id: </strong> {formData.paymentDetails.upiId}</p>
             <hr></hr>
             <h3>Message: </h3>
             <p>{formData.whyFundRaiser.story}</p>

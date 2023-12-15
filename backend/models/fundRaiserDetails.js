@@ -20,7 +20,12 @@ const fundRaiserDetails = new mongoose.Schema({
         story: String,
         gdrive: String,
     },
-    
+    paymentDetails: {
+      bankName: String,
+      accountNo: String,
+      ifscCode: String,
+      upiId: String,
+    }   
 },
     {
         collection: 'fund-raiser',
