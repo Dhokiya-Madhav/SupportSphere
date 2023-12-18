@@ -26,7 +26,7 @@ export default function Navbar() {
                             <a className="nav-link" style={{ color: "#EFEFEF", fontFamily: 'Nunito', fontSize: 19 }} aria-current="page" href="#"><b><i>Support-Sphere</i></b></a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" style={{ color: "#EFEFEF" }} href="#">Browse Fundraisers</a>
+                            <Link to='/fr' className='nav-link' style={{ color: "#EFEFEF" }}>Browse Fundraisers</Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" style={{ color: "#EFEFEF" }} href="#">About us</a>
