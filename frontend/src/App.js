@@ -9,6 +9,7 @@ import LoginPage from './Components/Login';
 import UserProfile from './Components/userProfile';
 import UserFundRaiser from './Components/userFundRaiser';
 import FundRaiserDetails from './Components/fundRaiserDetails';
+import FundRaiserHome from './Components/fundRaiserHome';
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ function App() {
         <Route element={<UserProfile/>} path='/myprofile'/>
         <Route element={<UserFundRaiser/>} path='/myfundraiser'/>
         <Route element={<FundRaiserDetails/>} path='/fundraiser'/>
+        <Route element={<FundRaiserHome/>} path='/fr'/>
       </Routes>
     </BrowserRouter>
   );
