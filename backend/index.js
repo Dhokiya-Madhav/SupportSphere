@@ -153,6 +153,16 @@ function mongoConnected() {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    app.get("/get-all-fundraisers", async (req, res) => {
+      try {
+        const fundraisers = await fundRaiser.find({},{__v:0});
+        console.log(fundraisers);
+        res.json(fundraisers);
+      } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 });
 
 }
