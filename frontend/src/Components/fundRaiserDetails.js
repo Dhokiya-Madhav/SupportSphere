@@ -16,11 +16,11 @@ export default function FundRaiserDetails() {
     }, []);
 
     return (
-        <div className="container mt-5" style={{maxWidth:'600px'}}>
-            <ul className="nav nav-tabs">
+        <div className="container mt-5" style={{ maxWidth: '600px' }}>
+            <ul className="nav nav-tabs flex-column flex-sm-row">
                 <li className="nav-item">
                     <button
-                        className={`btn btn-dark ${activeTab === 1 ? 'active' : ''}`}
+                        className={`btn btn-dark ${activeTab === 1 ? 'active' : ''} mb-2 mb-sm-0`}
                         onClick={() => handleTabClick(1)}
                     >
                         Patient Details
@@ -28,7 +28,7 @@ export default function FundRaiserDetails() {
                 </li>
                 <li className="nav-item">
                     <button
-                        className={`btn btn-dark ms-3 ${activeTab === 2 ? 'active' : ''}`}
+                        className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 2 ? 'active' : ''} mb-2 mb-sm-0`}
                         onClick={() => handleTabClick(2)}
                     >
                         Fundraiser Details
@@ -36,13 +36,22 @@ export default function FundRaiserDetails() {
                 </li>
                 <li className="nav-item">
                     <button
-                        className={`btn btn-dark ms-3 ${activeTab === 3 ? 'active' : ''}`}
+                        className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 3 ? 'active' : ''}`}
                         onClick={() => handleTabClick(3)}
                     >
                         Payment Details
                     </button>
                 </li>
+                <li className="nav-item">
+                    <button
+                        className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 4 ? 'active' : ''}`}
+                        onClick={() => handleTabClick(4)}
+                    >
+                        Contribute
+                    </button>
+                </li>
             </ul>
+
             <br></br>
             <div className="tab-content mt-2">
                 <div className={`tab-pane ${activeTab === 1 ? 'active' : ''}`}>
@@ -64,8 +73,11 @@ export default function FundRaiserDetails() {
                 <div className={`tab-pane ${activeTab === 3 ? 'active' : ''}`}>
                     <h4>Bank Name: {fundRaiserDetails.paymentDetails?.bankName}</h4>
                     <h4>Account Number: {fundRaiserDetails.paymentDetails?.accountNo}</h4>
-                    <h4>IFSC: {fundRaiserDetails.paymentDetails?.ifscCode}</h4> 
-                    <h4>UPI: {fundRaiserDetails.paymentDetails?.upiId}</h4>
+                    <h4>IFSC: {fundRaiserDetails.paymentDetails?.ifscCode}</h4>
+                    <h4>UPI: {fundRaiserDetails.paymentDetails?.upiId}</h4> 
+                </div>
+                <div className={`tab-pane ${activeTab === 4 ? 'active' : ''}`}>
+                    <div>Hello</div>
                 </div>
             </div>
         </div>
