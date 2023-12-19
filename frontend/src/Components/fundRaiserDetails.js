@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
+import QRCode from 'react-qr-code';
 export default function FundRaiserDetails() {
     const location = useLocation();
     const [fundRaiserDetails, setDetails] = useState([]);
@@ -15,13 +16,20 @@ export default function FundRaiserDetails() {
             })
     }, []);
     const [selectedOption, setSelectedOption] = useState(null);
-
+    const [pay,setPay] = useState(null);
+    const [amount,setAmount] = useState(null);
     const handleRadioChange = (event) => {
         const selectedValue = event.target.value;
         setSelectedOption(selectedValue);
         console.log(`Selected Radio Button: ${selectedValue}`);
     };
-
+    
+    const handlePayment = (e)=>{
+        e.preventDefault();
+        if(selectedOption === "option2" && amount != null){
+            setPay(true)
+        }
+    }
     return (
         <div className="container mt-5" style={{ maxWidth: '600px' }}>
             <ul className="nav nav-tabs flex-column flex-sm-row">
@@ -136,7 +144,13 @@ export default function FundRaiserDetails() {
                             </div>
                         </div>
                     </div>
-
+                    <br></br>
+                    <strong>Amount :</strong>
+                    <input type="number" className="form-control" onChange={(e)=>setAmount(e.target.value)} required/><br></br>
+                    <button className="btn btn-outline-dark" onClick={handlePayment}>Pay</button>
+                    {pay === true && (<div><br></br><h4>Scan the qrcode</h4>
+                        <QRCode className="" value={`upi://pay?pa=${fundRaiserDetails.paymentDetails?.upiId}&pn=Madhav&am=${amount}`} title='upi'/>
+                    </div>)}       
                 </div>
             </div>
         </div>
