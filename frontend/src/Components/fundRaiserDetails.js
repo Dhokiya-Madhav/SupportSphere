@@ -14,6 +14,13 @@ export default function FundRaiserDetails() {
                 setDetails(data);
             })
     }, []);
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    const handleRadioChange = (event) => {
+        const selectedValue = event.target.value;
+        setSelectedOption(selectedValue);
+        console.log(`Selected Radio Button: ${selectedValue}`);
+    };
 
     return (
         <div className="container mt-5" style={{ maxWidth: '600px' }}>
@@ -74,10 +81,62 @@ export default function FundRaiserDetails() {
                     <h4>Bank Name: {fundRaiserDetails.paymentDetails?.bankName}</h4>
                     <h4>Account Number: {fundRaiserDetails.paymentDetails?.accountNo}</h4>
                     <h4>IFSC: {fundRaiserDetails.paymentDetails?.ifscCode}</h4>
-                    <h4>UPI: {fundRaiserDetails.paymentDetails?.upiId}</h4> 
+                    <h4>UPI: {fundRaiserDetails.paymentDetails?.upiId}</h4>
                 </div>
                 <div className={`tab-pane ${activeTab === 4 ? 'active' : ''}`}>
-                    <div>Hello</div>
+                    <div className="container mt-4">
+                        <div className="row">
+                            <div className="col-sm-4">
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="option1"
+                                        value="option1"
+                                        checked={selectedOption === 'option1'}
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="option1">
+                                        Credit/Debit 
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="option2"
+                                        value="option2"
+                                        checked={selectedOption === 'option2'}
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="option2">
+                                        UPI Transfer
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="option3"
+                                        value="option3"
+                                        checked={selectedOption === 'option3'}
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="option3">
+                                        Direct Bank Transfer
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

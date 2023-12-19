@@ -143,27 +143,27 @@ function mongoConnected() {
   app.get('/fund-raiser/:id', async (req, res) => {
     const fundRaiserId = req.params.id;
     try {
-        const result = await fundRaiser.findById(fundRaiserId);
-        
-        if (!result) {
-            return res.status(404).json({ error: 'Fund raiser not found' });
-        }
-        res.status(200).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+      const result = await fundRaiser.findById(fundRaiserId);
 
-    app.get("/get-all-fundraisers", async (req, res) => {
-      try {
-        const fundraisers = await fundRaiser.find({},{__v:0});
-        console.log(fundraisers);
-        res.json(fundraisers);
-      } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+      if (!result) {
+        return res.status(404).json({ error: 'Fund raiser not found' });
       }
-    });
-});
+      res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.get('/getall', async (req, res) => {
+    try {
+      const fundraisers = await fundRaiser.find();
+      res.json(fundraisers);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 }
 

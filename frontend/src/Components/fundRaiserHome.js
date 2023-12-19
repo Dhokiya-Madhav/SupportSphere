@@ -5,16 +5,21 @@ export default function FundRaiserHome() {
     const [fundraisers, setFundraisers] = useState([]);
 
     useEffect(() => {
-        const apiUrl = 'http://localhost:5000/get-all-fundraisers';
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
+        const fetchFundraisers = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/getall');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch fundraisers');
+                }
+                const data = await response.json();
                 setFundraisers(data);
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+                console.log(fundraisers);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchFundraisers();
     }, []);
     return (
         <Card.Group className="mt-2 ms-1">
