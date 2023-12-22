@@ -165,6 +165,36 @@ function mongoConnected() {
     }
   });
 
+  app.get('/updateFundraisers/:id', async (req, res) => {
+    try {
+      const fundraiser = await fundRaiser.findById(req.params.id);
+
+      if (!fundraiser) {
+        return res.status(404).json({ error: 'Fundraiser not found' });
+      }
+      res.json(fundraiser);
+    } catch (error) {
+      console.error('Error fetching fundraiser:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.put('/api/updateFundRaiser/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const updatedFundRaiser = await fundRaiser.findByIdAndUpdate(id, req.body, { new: true });
+  
+      if (!updatedFundRaiser) {
+        return res.status(404).json({ error: 'Fundraiser not found' });
+      }
+  
+      res.json(updatedFundRaiser);
+    } catch (error) {
+      console.error('Error updating fundraiser:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 }
 
 app.listen(port, () => {
