@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import QRCode from 'react-qr-code';
+import GooglePayButton from '@google-pay/button-react';
 export default function FundRaiserDetails() {
     const location = useLocation();
     const [fundRaiserDetails, setDetails] = useState([]);
@@ -16,17 +17,17 @@ export default function FundRaiserDetails() {
             })
     }, []);
     const [selectedOption, setSelectedOption] = useState(null);
-    const [pay,setPay] = useState(null);
-    const [amount,setAmount] = useState(null);
+    const [pay, setPay] = useState(null);
+    const [amount, setAmount] = useState(null);
     const handleRadioChange = (event) => {
         const selectedValue = event.target.value;
         setSelectedOption(selectedValue);
         console.log(`Selected Radio Button: ${selectedValue}`);
     };
-    
-    const handlePayment = (e)=>{
+
+    const handlePayment = (e) => {
         e.preventDefault();
-        if(selectedOption === "option2" && amount != null){
+        if (selectedOption === "option2" && amount != null) {
             setPay(true)
         }
     }
@@ -100,22 +101,6 @@ export default function FundRaiserDetails() {
                                         className="form-check-input"
                                         type="radio"
                                         name="exampleRadios"
-                                        id="option1"
-                                        value="option1"
-                                        checked={selectedOption === 'option1'}
-                                        onChange={handleRadioChange}
-                                    />
-                                    <label className="form-check-label" htmlFor="option1">
-                                        Credit/Debit 
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="col-sm-4">
-                                <div className="form-check">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
                                         id="option2"
                                         value="option2"
                                         checked={selectedOption === 'option2'}
@@ -146,11 +131,11 @@ export default function FundRaiserDetails() {
                     </div>
                     <br></br>
                     <strong>Amount :</strong>
-                    <input type="number" className="form-control" onChange={(e)=>setAmount(e.target.value)} required/><br></br>
+                    <input type="number" className="form-control" onChange={(e) => setAmount(e.target.value)} required /><br></br>
                     <button className="btn btn-outline-dark" onClick={handlePayment}>Pay</button>
-                    {pay === true && (<div><br></br><h4>Scan the qrcode</h4>
-                        <QRCode className="" value={`upi://pay?pa=${fundRaiserDetails.paymentDetails?.upiId}&pn=Madhav&am=${amount}`} title='upi'/>
-                    </div>)}       
+                    {pay === true && (<div><h4 className="mt-1">Scan the qrcode</h4>
+                        <QRCode className="" value={`upi://pay?pa=${fundRaiserDetails.paymentDetails?.upiId}&pn=Madhav&am=${amount}`} title='upi' />
+                    </div>)}
                 </div>
             </div>
         </div>
