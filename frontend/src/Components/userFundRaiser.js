@@ -48,6 +48,12 @@ export default function UserFundRaiser() {
                                 More Details
                             </Button>
                             </Link>
+
+                            <Link to='/update' state={{ id: fundraiser._id }}>
+                                <Button basic color='orange' className='ms-2'>
+                                    Edit
+                                </Button>
+                            </Link>
                         </div>
                     </Card.Content>
                 </Card>
