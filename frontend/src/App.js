@@ -10,6 +10,7 @@ import UserProfile from './Components/userProfile';
 import UserFundRaiser from './Components/userFundRaiser';
 import FundRaiserDetails from './Components/fundRaiserDetails';
 import FundRaiserHome from './Components/fundRaiserHome';
+import UpdateFundRaiser from './Components/updateFundRaiser';
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +24,7 @@ function App() {
         <Route element={<UserFundRaiser/>} path='/myfundraiser'/>
         <Route element={<FundRaiserDetails/>} path='/fundraiser'/>
         <Route element={<FundRaiserHome/>} path='/fr'/>
+        <Route element={<UpdateFundRaiser/>} path='/update'/>
       </Routes>
     </BrowserRouter>
   );
