@@ -34,7 +34,6 @@ export default function FundRaiserHome() {
                         <Card.Header>{fundraiser.fundRaiser.fundRaiserTitle}</Card.Header>
                         <Card.Meta>{fundraiser.patientDetails.Name}--{fundraiser.patientDetails.age} Years</Card.Meta>
                         <Card.Description>
-                            Total Raised <br></br>
                             Amount to be raised :- {fundraiser.fundRaiser.amount}
                         </Card.Description>
                     </Card.Content>
