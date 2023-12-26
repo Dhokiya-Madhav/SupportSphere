@@ -157,7 +157,7 @@ function mongoConnected() {
     }
   });
 
-  app.get('/getall', async (req, res) => {
+  app.get('/getall', async(req, res) => {
     try {
       const fundraisers = await fundRaiser.find();
       res.json(fundraisers);
@@ -210,6 +210,21 @@ function mongoConnected() {
 
     } catch (error) {
       console.error('Error storing data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.get('/payment-details/:id', async (req, res) => {
+    const fundRaiserId = req.params.id;
+    try {
+      const result = await Payment.find({fundRaiserId:fundRaiserId});
+
+      if (!result) {
+        return res.status(404).json({ error: 'Fund raiser not found' });
+      }
+      res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
