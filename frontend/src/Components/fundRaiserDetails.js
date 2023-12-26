@@ -5,11 +5,12 @@ import QRCode from 'react-qr-code';
 export default function FundRaiserDetails() {
     const location = useLocation();
     const [fundRaiserDetails, setDetails] = useState([]);
+    const [paymentDetails, setPaymentDetails] = useState();
     const [activeTab, setActiveTab] = useState(1);
-
+    const [totalAmount, setTotalAmount] = useState(null);
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-
+    const [percentageRaised, setPercentageRaised] = useState(0);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
 
     const handleTabClick = (tabNumber) => {
@@ -19,8 +20,24 @@ export default function FundRaiserDetails() {
         fetch("http://localhost:5000/fund-raiser/" + location.state.id).then((response) => response.json())
             .then((data) => {
                 setDetails(data);
+                fetchPaymentDetails();
             })
     }, []);
+
+    const fetchPaymentDetails = () => {
+        //console.log(location.state.id);
+        fetch("http://localhost:5000/payment-details/" + location.state.id).then((response) => response.json())
+            .then((data) => {
+                setPaymentDetails(data);
+                console.log(data)
+                const totalAmount = data.reduce((total, payment) => total + payment.amount, 0);
+                console.log('Total Amount:', totalAmount);
+                setTotalAmount(totalAmount);
+
+                const calculatedPercentage = calculatePercentageRaised(totalAmount, fundRaiserDetails.fundRaiser?.amount);
+                setPercentageRaised(calculatedPercentage);
+            })
+    }
     const [selectedOption, setSelectedOption] = useState(null);
     const [pay, setPay] = useState(null);
     const [amount, setAmount] = useState(null);
@@ -37,7 +54,7 @@ export default function FundRaiserDetails() {
         e.preventDefault();
         if (selectedOption === "option2" && amount != null && name !== "" && phoneNumber !== "") {
             setPay(true)
-            
+
             storePaymentDetails(name, phoneNumber, amount, location.state.id);
         }
         else if (selectedOption === "option3" && amount != null && name !== "" && phoneNumber !== "") {
@@ -58,17 +75,27 @@ export default function FundRaiserDetails() {
                 fundRaiserId,
             }),
         })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Payment details stored successfully:", data);
-            setPaymentSuccess(true);
-            setTimeout(() => {
-                setPaymentSuccess(false)
-            }, 4000);
-        })
-        .catch((error) => {
-            console.error("Error storing payment details:", error);
-        });
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Payment details stored successfully:", data);
+                setPaymentSuccess(true);
+                setTimeout(() => {
+                    setPaymentSuccess(false)
+                }, 4000);
+            })
+            .catch((error) => {
+                console.error("Error storing payment details:", error);
+            });
+    };
+
+    const calculatePercentageRaised = (totalRaised, totalToBeRaised) => {
+        console.log(totalRaised);
+        if (totalToBeRaised <= 0) {
+            return 0;
+        }
+
+        const percentageRaised = (totalRaised / totalToBeRaised) * 100;
+        return Math.min(100, percentageRaised);
     };
 
     return (
@@ -122,6 +149,7 @@ export default function FundRaiserDetails() {
                 </div>
                 <div className={`tab-pane ${activeTab === 2 ? 'active' : ''}`}>
                     <h1>{fundRaiserDetails.fundRaiser?.amount} To be raised</h1>
+                    <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount} {percentageRaised.toFixed(2)}</h4>
                     <h4>This fundraiser is for my <b>{fundRaiserDetails.fundRaiser?.fundRaiseFor}</b></h4>
                     <h4>{fundRaiserDetails.whyFundRaiser?.story}</h4>
                     <h4><a href={fundRaiserDetails.whyFundRaiser?.gdrive}>Link of medical documents</a></h4>
