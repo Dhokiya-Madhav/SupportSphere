@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-import GooglePayButton from '@google-pay/button-react';
+
 export default function FundRaiserDetails() {
     const location = useLocation();
     const [fundRaiserDetails, setDetails] = useState([]);
     const [activeTab, setActiveTab] = useState(1);
+
+    const [name, setName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
@@ -23,14 +28,49 @@ export default function FundRaiserDetails() {
         const selectedValue = event.target.value;
         setSelectedOption(selectedValue);
         console.log(`Selected Radio Button: ${selectedValue}`);
+        if (selectedValue === "option3") {
+            setActiveTab(3);
+        }
     };
 
     const handlePayment = (e) => {
         e.preventDefault();
-        if (selectedOption === "option2" && amount != null) {
+        if (selectedOption === "option2" && amount != null && name !== "" && phoneNumber !== "") {
             setPay(true)
+            
+            storePaymentDetails(name, phoneNumber, amount, location.state.id);
+        }
+        else if (selectedOption === "option3" && amount != null && name !== "" && phoneNumber !== "") {
+
         }
     }
+
+    const storePaymentDetails = (name, phoneNumber, amount, fundRaiserId) => {
+        fetch("http://localhost:5000/store-payment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                phoneNumber,
+                amount,
+                fundRaiserId,
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Payment details stored successfully:", data);
+            setPaymentSuccess(true);
+            setTimeout(() => {
+                setPaymentSuccess(false)
+            }, 4000);
+        })
+        .catch((error) => {
+            console.error("Error storing payment details:", error);
+        });
+    };
+
     return (
         <div className="container mt-5" style={{ maxWidth: '600px' }}>
             <ul className="nav nav-tabs flex-column flex-sm-row">
@@ -130,6 +170,16 @@ export default function FundRaiserDetails() {
                         </div>
                     </div>
                     <br></br>
+                    {paymentSuccess && (
+                        <div className="alert alert-success mt-3" role="alert">
+                            Payment Successful! Thank you for your contribution.
+                        </div>
+                    )}
+                    <br></br>
+                    <strong>Name :</strong>
+                    <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required /><br></br>
+                    <strong>Phone Number :</strong>
+                    <input type="number" className="form-control" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required /><br></br>
                     <strong>Amount :</strong>
                     <input type="number" className="form-control" onChange={(e) => setAmount(e.target.value)} required /><br></br>
                     <button className="btn btn-outline-dark" onClick={handlePayment}>Pay</button>
