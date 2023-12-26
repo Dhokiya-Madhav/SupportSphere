@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 var bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const stripe = require("stripe")("sk_test_51OQOUMSJCOe7U7ySbDG8YtpJdLl5F9QkCJm5G0Zgs6YuglRvj6gBvfgHSwyi7et9QmUw5U7oA47TI1oDxNrWqEP200FR7GtoZE")
 var app = express();
 var bodyParser = require('body-parser');
 
@@ -28,6 +29,7 @@ mongoose.connect(
 
 const { user } = require("./models/user.js")
 const { fundRaiser } = require("./models/fundRaiserDetails.js")
+const { Payment } = require("./models/payment.js")
 
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -181,18 +183,34 @@ function mongoConnected() {
 
   app.put('/api/updateFundRaiser/:id', async (req, res) => {
     const { id } = req.params;
-  
+
     try {
       const updatedFundRaiser = await fundRaiser.findByIdAndUpdate(id, req.body, { new: true });
-  
+
       if (!updatedFundRaiser) {
         return res.status(404).json({ error: 'Fundraiser not found' });
       }
-  
+
       res.json(updatedFundRaiser);
     } catch (error) {
       console.error('Error updating fundraiser:', error);
       res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.post('/store-payment', async (req, res) => {
+    try {
+      const { name, phoneNumber, amount, fundRaiserId } = req.body;
+      
+
+      const data = await Payment.create({name,phoneNumber,amount,fundRaiserId});
+      if(data){
+        res.status(201).json(data);
+      }
+
+    } catch (error) {
+      console.error('Error storing data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 }
