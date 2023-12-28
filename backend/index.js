@@ -228,6 +228,34 @@ function mongoConnected() {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+  app.get("/trending", async (req, res) => {
+    try {
+      const fundraisers = await fundRaiser.find({
+        "fundRaiser.amount": { $gt: 500000 },
+      });
+  
+      res.json(fundraisers);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  app.delete("/delete-fundraiser/:id", async (req, res) => {
+    try {
+      const deletedFundraiser = await fundRaiser.findByIdAndDelete(req.params.id);
+  
+      if (!deletedFundraiser) {
+        return res.status(404).json({ message: "Fundraiser not found" });
+      }
+  
+      res.json({ message: "Fundraiser deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 }
 
 app.listen(port, () => {
