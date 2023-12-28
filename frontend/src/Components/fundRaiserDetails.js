@@ -12,6 +12,7 @@ export default function FundRaiserDetails() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [percentageRaised, setPercentageRaised] = useState(0);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const isFundraiserClosed = totalAmount >= fundRaiserDetails.fundRaiser?.amount;
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
@@ -33,9 +34,6 @@ export default function FundRaiserDetails() {
                 const totalAmount = data.reduce((total, payment) => total + payment.amount, 0);
                 console.log('Total Amount:', totalAmount);
                 setTotalAmount(totalAmount);
-
-                const calculatedPercentage = calculatePercentageRaised(totalAmount, fundRaiserDetails.fundRaiser?.amount);
-                setPercentageRaised(calculatedPercentage);
             })
     }
     const [selectedOption, setSelectedOption] = useState(null);
@@ -88,16 +86,6 @@ export default function FundRaiserDetails() {
             });
     };
 
-    const calculatePercentageRaised = (totalRaised, totalToBeRaised) => {
-        console.log(totalRaised);
-        if (totalToBeRaised <= 0) {
-            return 0;
-        }
-
-        const percentageRaised = (totalRaised / totalToBeRaised) * 100;
-        return Math.min(100, percentageRaised);
-    };
-
     return (
         <div className="container mt-5" style={{ maxWidth: '600px' }}>
             <ul className="nav nav-tabs flex-column flex-sm-row">
@@ -117,7 +105,7 @@ export default function FundRaiserDetails() {
                         Fundraiser Details
                     </button>
                 </li>
-                <li className="nav-item">
+                {!isFundraiserClosed && (<><li className="nav-item">
                     <button
                         className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 3 ? 'active' : ''}`}
                         onClick={() => handleTabClick(3)}
@@ -125,19 +113,22 @@ export default function FundRaiserDetails() {
                         Payment Details
                     </button>
                 </li>
-                <li className="nav-item">
-                    <button
-                        className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 4 ? 'active' : ''}`}
-                        onClick={() => handleTabClick(4)}
-                    >
-                        Contribute
-                    </button>
-                </li>
+                    <li className="nav-item">
+                        <button
+                            className={`btn btn-dark ms-0 ms-sm-3 ${activeTab === 4 ? 'active' : ''}`}
+                            onClick={() => handleTabClick(4)}
+                        >
+                            Contribute
+                        </button>
+                    </li></>)}
+
             </ul>
 
             <br></br>
             <div className="tab-content mt-2">
                 <div className={`tab-pane ${activeTab === 1 ? 'active' : ''}`}>
+                    {isFundraiserClosed && (<><div className="alert alert-success">Fundraiser is closed. Target amount has been reached. Thank you for your support!
+                    </div></>)}
                     <h1>{fundRaiserDetails.fundRaiser?.fundRaiserTitle}</h1>
                     <center>
                         <img src={fundRaiserDetails.fundRaiser?.image} height={190} width={190} />
@@ -148,8 +139,10 @@ export default function FundRaiserDetails() {
                     <h4><b>City : </b>{fundRaiserDetails.patientDetails?.city}</h4>
                 </div>
                 <div className={`tab-pane ${activeTab === 2 ? 'active' : ''}`}>
+                    {isFundraiserClosed && (<><div className="alert alert-success">Fundraiser is closed. Target amount has been reached. Thank you for your support!
+                    </div></>)}
                     <h1>{fundRaiserDetails.fundRaiser?.amount} To be raised</h1>
-                    <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount} {percentageRaised.toFixed(2)}</h4>
+                    <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount}</h4>
                     <h4>This fundraiser is for my <b>{fundRaiserDetails.fundRaiser?.fundRaiseFor}</b></h4>
                     <h4>{fundRaiserDetails.whyFundRaiser?.story}</h4>
                     <h4><a href={fundRaiserDetails.whyFundRaiser?.gdrive}>Link of medical documents</a></h4>
