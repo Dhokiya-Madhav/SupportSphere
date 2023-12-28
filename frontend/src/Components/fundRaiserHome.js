@@ -22,32 +22,36 @@ export default function FundRaiserHome() {
         fetchFundraisers();
     }, []);
     return (
-        <Card.Group className="mt-2 ms-1">
-            {fundraisers.map((fundraiser, index) => (
-                <Card key={index}>
-                    <Card.Content>
-                        <Image
-                            floated='right'
-                            size='mini'
-                            src={fundraiser.fundRaiser.image}
-                        />
-                        <Card.Header>{fundraiser.fundRaiser.fundRaiserTitle}</Card.Header>
-                        <Card.Meta>{fundraiser.patientDetails.Name}--{fundraiser.patientDetails.age} Years</Card.Meta>
-                        <Card.Description>
-                            Amount to be raised :- {fundraiser.fundRaiser.amount}
-                        </Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                        <div className='ui two buttons'>
-                            <Link to='/fundraiser' state={{ id: fundraiser._id }}>
-                                <Button basic color='green'>
-                                    More Details
-                                </Button>
-                            </Link>
-                        </div>
-                    </Card.Content>
-                </Card>
-            ))}
-        </Card.Group>
+        <>
+            <div className="mx-auto mt-1 ms-4">
+                <Card.Group className="mt-2 ms-5">
+                    {fundraisers.map((fundraiser, index) => (
+                        <Card key={index}>
+                            <Card.Content>
+                                <Image
+                                    floated='right'
+                                    size='mini'
+                                    src={fundraiser.fundRaiser.image}
+                                />
+                                <Card.Header>{fundraiser.fundRaiser.fundRaiserTitle}</Card.Header>
+                                <Card.Meta>{fundraiser.patientDetails.Name}--{fundraiser.patientDetails.age} Years</Card.Meta>
+                                <Card.Description>
+                                    Amount to be raised :- {fundraiser.fundRaiser.amount}
+                                </Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <div className='ui two buttons'>
+                                    <Link to='/fundraiser' state={{ id: fundraiser._id }}>
+                                        <Button basic color='green'>
+                                            More Details
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </Card.Content>
+                        </Card>
+                    ))}
+                </Card.Group>
+            </div>
+        </>
     );
 }
