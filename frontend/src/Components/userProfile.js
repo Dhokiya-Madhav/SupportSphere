@@ -11,7 +11,9 @@ export default function UserProfile() {
         phoneNumber: "",
     });
 
+
     const [errors, setErrors] = useState({});
+    const [msg, setMsg] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
         fetch("http://localhost:5000/user-profile/" + sessionStorage.getItem('userEmail'), {
@@ -59,6 +61,10 @@ export default function UserProfile() {
                 if (response.ok) {
                     console.log('User profile updated successfully');
                     sessionStorage.setItem('userEmail',formData.email)
+                    setMsg(true)
+                    setTimeout(() => {
+                        setMsg(false)
+                    }, 4000);
                 } else {
                     console.error('Error updating user profile:', response.statusText);
                 }
@@ -109,6 +115,7 @@ export default function UserProfile() {
                             <center><h2>User Profile</h2></center>
                         </div>
                         <div className="card-body">
+                            {msg&& (<><div className="alert alert-success">Profile updated!</div></>)}
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Username</label>
