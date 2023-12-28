@@ -1,11 +1,30 @@
-import React from "react";
-import { Statistic, Grid, Image, Segment, Card, Icon } from 'semantic-ui-react';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Statistic, Grid, Image, Segment, Card, Button } from 'semantic-ui-react';
 import P1 from '../images/patient1.jpg';
 import P2 from '../images/patient2.jpg';
 import P3 from '../images/patient3.jpg';
 import P4 from '../images/patient4.jpg';
 import '../css/Home.css';
 export default function Home() {
+    const [fundraisers, setFundraisers] = useState([]);
+    useEffect(() => {
+        const fetchFundraisers = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/trending');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch fundraisers');
+                }
+                const data = await response.json();
+                setFundraisers(data);
+                console.log(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchFundraisers();
+    }, []);
     return (
         <>
             <Segment>
@@ -66,8 +85,39 @@ export default function Home() {
             </Segment>
 
             <div>
-                <center><p className="fontStyle trending">Trending Fundraisers</p></center>
-                
+                <center><p className="fontStyle trending">Trending Fundraisers</p>
+                    <ul className="list-group list-group-horizontal position-relative overflow-auto w-75">
+                        {fundraisers.map((fundraiser) => (
+                            <li className="list-group-item">
+
+                                <Card>
+                                    <Card.Content>
+                                        <Image
+                                            floated='right'
+                                            size='mini'
+                                            src={fundraiser.fundRaiser.image}
+                                        />
+                                        <Card.Header>{fundraiser.fundRaiser.fundRaiserTitle}</Card.Header>
+                                        <Card.Meta>{fundraiser.patientDetails.Name}--{fundraiser.patientDetails.age} Years</Card.Meta>
+                                        <Card.Description>
+                                            Amount to be raised :- {fundraiser.fundRaiser.amount}
+                                        </Card.Description>
+                                    </Card.Content>
+                                    <Card.Content extra>
+                                        <div className='ui two buttons'>
+                                            <Link to='/fundraiser' state={{ id: fundraiser._id }}>
+                                                <Button basic color='green'>
+                                                    More Details
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </Card.Content>
+                                </Card>
+
+                            </li>
+                        ))}
+                    </ul>
+                </center>
             </div>
         </>
     )
