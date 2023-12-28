@@ -6,7 +6,7 @@ import { Message } from 'semantic-ui-react'
 export default function FundRaiserDetails() {
     const location = useLocation();
     const [fundRaiserDetails, setDetails] = useState([]);
-    const [paymentDetails, setPaymentDetails] = useState();
+    const [paymentDetails, setPaymentDetails] = useState([]);
     const [activeTab, setActiveTab] = useState(1);
     const [totalAmount, setTotalAmount] = useState(null);
     const [name, setName] = useState("");
@@ -19,6 +19,10 @@ export default function FundRaiserDetails() {
         setActiveTab(tabNumber);
     };
     useEffect(() => {
+        if(sessionStorage.getItem("userEmail") == null){
+            window.location='http://localhost:3000/login';
+            return;
+        }
         fetch("http://localhost:5000/fund-raiser/" + location.state.id).then((response) => response.json())
             .then((data) => {
                 setDetails(data);
@@ -142,8 +146,8 @@ export default function FundRaiserDetails() {
                     {isFundraiserClosed && (<><div className="alert alert-success">Fundraiser is closed. Target amount has been reached. Thank you for your support!
                     </div></>)}
 
-                    <h1>{fundRaiserDetails.fundRaiser?.amount} To be raised</h1>
-                    <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount}</h4>
+                    <h1>{fundRaiserDetails.fundRaiser?.amount} Rs To be raised</h1>
+                    <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount} Rs</h4>
 
                     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         Open Donor List
@@ -158,7 +162,7 @@ export default function FundRaiserDetails() {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    {paymentDetails.map((pd, index) => (
+                                    {paymentDetails.map((pd) => (
                                         <Message>
                                             <Message.Header>{pd?.name}</Message.Header>
                                             <p>
