@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import QRCode from 'react-qr-code';
+import { Message } from 'semantic-ui-react'
 
 export default function FundRaiserDetails() {
     const location = useLocation();
@@ -13,7 +14,7 @@ export default function FundRaiserDetails() {
     const [percentageRaised, setPercentageRaised] = useState(0);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const isFundraiserClosed = totalAmount >= fundRaiserDetails.fundRaiser?.amount;
-
+    const [openDonorList, setOpenDonorList] = useState(false);
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
     };
@@ -121,7 +122,6 @@ export default function FundRaiserDetails() {
                             Contribute
                         </button>
                     </li></>)}
-
             </ul>
 
             <br></br>
@@ -141,8 +141,38 @@ export default function FundRaiserDetails() {
                 <div className={`tab-pane ${activeTab === 2 ? 'active' : ''}`}>
                     {isFundraiserClosed && (<><div className="alert alert-success">Fundraiser is closed. Target amount has been reached. Thank you for your support!
                     </div></>)}
+
                     <h1>{fundRaiserDetails.fundRaiser?.amount} To be raised</h1>
                     <h4 className="text-danger">Total Amount Raised Till Now: {totalAmount}</h4>
+
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Open Donor List
+                    </button>
+
+
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Donor List</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {paymentDetails.map((pd, index) => (
+                                        <Message>
+                                            <Message.Header>{pd?.name}</Message.Header>
+                                            <p>
+                                                {pd?.amount} Rs
+                                            </p>
+                                        </Message>
+                                    ))}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <h4>This fundraiser is for my <b>{fundRaiserDetails.fundRaiser?.fundRaiseFor}</b></h4>
                     <h4>{fundRaiserDetails.whyFundRaiser?.story}</h4>
                     <h4><a href={fundRaiserDetails.whyFundRaiser?.gdrive}>Link of medical documents</a></h4>
