@@ -29,7 +29,7 @@ export default function Navbar() {
                             <Link to='/fr' className='nav-link' style={{ color: "#EFEFEF" }}>Browse Fundraisers</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" style={{ color: "#EFEFEF" }} href="#">About us</a>
+                        <Link to='/about' className='nav-link' style={{ color: "#EFEFEF" }}>About Us</Link>
                         </li>
                     </ul>
                     <form className="d-flex" role="search">
