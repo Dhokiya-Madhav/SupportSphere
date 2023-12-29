@@ -11,6 +11,8 @@ import UserFundRaiser from './Components/userFundRaiser';
 import FundRaiserDetails from './Components/fundRaiserDetails';
 import FundRaiserHome from './Components/fundRaiserHome';
 import UpdateFundRaiser from './Components/updateFundRaiser';
+import Footer from './Components/footer';
+import MedicalCrowdfundingPlatform from './Components/aboutUs';
 function App() {
   return (
     <BrowserRouter>
@@ -25,9 +27,12 @@ function App() {
         <Route element={<FundRaiserDetails/>} path='/fundraiser'/>
         <Route element={<FundRaiserHome/>} path='/fr'/>
         <Route element={<UpdateFundRaiser/>} path='/update'/>
+        <Route element={<MedicalCrowdfundingPlatform/>} path='/about'/>
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }
 
 export default App;
+
