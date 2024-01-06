@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 var bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const stripe = require("stripe")("sk_test_51OQOUMSJCOe7U7ySbDG8YtpJdLl5F9QkCJm5G0Zgs6YuglRvj6gBvfgHSwyi7et9QmUw5U7oA47TI1oDxNrWqEP200FR7GtoZE")
+const nodemailer = require('nodemailer')
 var app = express();
 var bodyParser = require('body-parser');
 
@@ -157,7 +157,7 @@ function mongoConnected() {
     }
   });
 
-  app.get('/getall', async(req, res) => {
+  app.get('/getall', async (req, res) => {
     try {
       const fundraisers = await fundRaiser.find();
       res.json(fundraisers);
@@ -201,10 +201,10 @@ function mongoConnected() {
   app.post('/store-payment', async (req, res) => {
     try {
       const { name, phoneNumber, amount, fundRaiserId } = req.body;
-      
 
-      const data = await Payment.create({name,phoneNumber,amount,fundRaiserId});
-      if(data){
+
+      const data = await Payment.create({ name, phoneNumber, amount, fundRaiserId });
+      if (data) {
         res.status(201).json(data);
       }
 
@@ -217,7 +217,7 @@ function mongoConnected() {
   app.get('/payment-details/:id', async (req, res) => {
     const fundRaiserId = req.params.id;
     try {
-      const result = await Payment.find({fundRaiserId:fundRaiserId});
+      const result = await Payment.find({ fundRaiserId: fundRaiserId });
 
       if (!result) {
         return res.status(404).json({ error: 'Fund raiser not found' });
@@ -234,7 +234,7 @@ function mongoConnected() {
       const fundraisers = await fundRaiser.find({
         "fundRaiser.amount": { $gt: 500000 },
       });
-  
+
       res.json(fundraisers);
     } catch (error) {
       console.error(error);
@@ -245,15 +245,70 @@ function mongoConnected() {
   app.delete("/delete-fundraiser/:id", async (req, res) => {
     try {
       const deletedFundraiser = await fundRaiser.findByIdAndDelete(req.params.id);
-  
+
       if (!deletedFundraiser) {
         return res.status(404).json({ message: "Fundraiser not found" });
       }
-  
+
       res.json({ message: "Fundraiser deleted successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  app.post("/send-email", async (req, res) => {
+    try {
+      const userData = await user.findOne({ email: req.body.email });
+      if (!userData) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "madhavdhokiya7069@gmail.com",
+          pass: "fipkxcmktoixpsad",
+        },
+      });
+
+      const resetLink = `http://localhost:3000/reset-password/`;
+      const mailOptions = {
+        from: "madhavdhokiya7069@gmail.com",
+        to: req.body.email,
+        subject: "Support-Sphere Password Reset Link",
+        html: `<p>You have requested a password reset. Click the following link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ message: "Email could not be sent", error });
+        }
+        res.status(200).json({ message: "Email sent successfully", info });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/resetPassword', async (req, res) => {
+    try {
+      const email = req.body.email;
+      const newPassword = req.body.psw;
+      const foundUser = await user.findOne({ email });
+
+      if (!foundUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      foundUser.password = hashedPassword;
+      await foundUser.save();
+      return res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   });
 }
