@@ -13,6 +13,7 @@ import FundRaiserHome from './Components/fundRaiserHome';
 import UpdateFundRaiser from './Components/updateFundRaiser';
 import Footer from './Components/footer';
 import MedicalCrowdfundingPlatform from './Components/aboutUs';
+import Reset from './Components/resetPassword';
 function App() {
   return (
     <BrowserRouter>
@@ -28,6 +29,7 @@ function App() {
         <Route element={<FundRaiserHome/>} path='/fr'/>
         <Route element={<UpdateFundRaiser/>} path='/update'/>
         <Route element={<MedicalCrowdfundingPlatform/>} path='/about'/>
+        <Route element={<Reset/>} path='/reset-password'/>
       </Routes>
       <Footer/>
     </BrowserRouter>

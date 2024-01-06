@@ -4,7 +4,7 @@ const Footer = () => {
     return (
         <>
             <br></br><br></br>
-            <footer className="bg-dark text-light py-4 fixed-bottom">
+            <footer className="bg-dark text-light py-4">
                 <div className="container">
                     <div className="row">
                         {/* Navigation Links */}
@@ -24,7 +24,7 @@ const Footer = () => {
                         </div>
                         {/* Social Media Links */}
                         <div className="col-md-4">
-                            <h5>Connect With Us</h5>
+                            
                             <ul className="list-inline">
                                 <li className="list-inline-item"><a href="#" className="text-light"><i className="fab fa-facebook"></i></a></li>
                                 <li className="list-inline-item"><a href="#" className="text-light"><i className="fab fa-twitter"></i></a></li>

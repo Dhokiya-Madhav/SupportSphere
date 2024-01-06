@@ -27,10 +27,7 @@ export default function SignUp() {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            // Form is valid, you can perform further actions (e.g., submit to a server)
-            //console.log("Form submitted:", formData);
             try {
-                // Send the user data to the server using fetch
                 const response = await fetch("http://localhost:5000/signup", {
                     method: "POST",
                     headers: {
