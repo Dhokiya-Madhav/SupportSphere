@@ -1,0 +1,17 @@
+.horizontal-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.content {
+  display: inline - block;
+}
+
+.item {
+  display: inline - block;
+  width: 200px;
+  height: 200px;
+  margin-right: 10px;
+  background-color: #ddd;
+}

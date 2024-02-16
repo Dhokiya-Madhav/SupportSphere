@@ -186,6 +186,7 @@ export default function FundRaiserDetails() {
                     <h4>Account Number: {fundRaiserDetails.paymentDetails?.accountNo}</h4>
                     <h4>IFSC: {fundRaiserDetails.paymentDetails?.ifscCode}</h4>
                     <h4>UPI: {fundRaiserDetails.paymentDetails?.upiId}</h4>
+                    <br></br><br></br><br></br>
                 </div>
                 <div className={`tab-pane ${activeTab === 4 ? 'active' : ''}`}>
                     <div className="container mt-4">

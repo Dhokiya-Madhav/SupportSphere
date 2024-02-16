@@ -86,10 +86,10 @@ export default function Home() {
 
             <div>
                 <center><p className="fontStyle trending">Trending Fundraisers</p>
+                
                     <ul className="list-group list-group-horizontal position-relative overflow-auto w-75">
                         {fundraisers.map((fundraiser) => (
                             <li className="list-group-item">
-
                                 <Card>
                                     <Card.Content>
                                         <Image

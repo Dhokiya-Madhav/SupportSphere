@@ -79,6 +79,7 @@ export default function UserFundRaiser() {
                     </Card>
                 ))}
             </Card.Group>
+            <br></br><br></br><br></br><br></br><br></br><br></br>
         </div>
     );
 }
