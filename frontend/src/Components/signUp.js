@@ -12,47 +12,33 @@ export default function SignUp() {
     });
 
     const [errors, setErrors] = useState({});
-    
+    const [showModal, setShowModal] = useState(false);
+    const [otpValue, setOtpValue] = useState("");
+    const [usrOtpValue, setUsrOtpValue] = useState("");
+    const [otpError, setOtpError] = useState("");
+    const [usrEmail, setUsrEmail] = useState(null);
+
+    const handleOTPChange = (e) => {
+        setUsrOtpValue(e.target.value)
+    };
+
+    const validateOTP = () => {
+        let error = "";
+
+        if (!otpValue.trim()) {
+            error = "OTP is required";
+        } else if (!/^\d{6}$/.test(otpValue)) {
+            error = "OTP must be 6 digits";
+        }
+
+        return error;
+    };
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const newErrors = validateForm(formData);
-        setErrors(newErrors);
-
-        if (Object.keys(newErrors).length === 0) {
-            try {
-                const response = await fetch("http://localhost:5000/signup", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                if (response.ok) {
-                    const responseData = await response.json();
-                    console.log("User successfully registered:", responseData);
-                    alert("User successfully registered");
-                    window.location="http://localhost:3000/login"
-                    
-                } else {
-                    console.error("Failed to register user");
-                    alert("Failed to register user");
-                }
-            } catch (error) {
-                console.error("Error during fetch:", error);
-            }
-        } else {
-            // Form has errors, handle them accordingly
-            console.log("Form has errors:", newErrors);
-        }
     };
 
     const validateForm = (data) => {
@@ -64,13 +50,18 @@ export default function SignUp() {
         }
 
         if (!data.email.trim()) {
-            errors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+            errors.email = "Email address is required";
+        }
+        else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
             errors.email = "Email address is invalid";
         }
 
         if (!data.password.trim()) {
             errors.password = "Password is required";
+        } else if (data.password.length < 6) {
+            errors.password = "Password must be at least 6 characters long";
+        } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(data.password)) {
+            errors.password = "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character";
         }
 
         if (data.password !== data.confirmPassword) {
@@ -79,6 +70,8 @@ export default function SignUp() {
 
         if (!data.city.trim()) {
             errors.city = "City is required";
+        } else if (data.city.trim().length <= 2) {
+            errors.city = "City name must be greater than 2 characters";
         }
 
         if (!data.phoneNumber.trim()) {
@@ -88,6 +81,101 @@ export default function SignUp() {
         }
 
         return errors;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const newErrors = validateForm(formData);
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            setUsrEmail(e.target.value);
+            try {
+                const response = await fetch("http://localhost:5000/acc-verify", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email: formData.email }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log(result.otp);
+                    setOtpValue(result.otp)
+                } else {
+                    alert("Enter valid email")
+                    console.error("Error sending email:", result.message);
+                }
+            } catch (error) {
+                alert("Enter valid email")
+                console.error("Error sending email:", error.message);
+            }
+            setShowModal(true)
+            // try {
+            //     const response = await fetch("http://localhost:5000/signup", {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //         },
+            //         body: JSON.stringify(formData),
+            //     });
+            //     console.log('====================================');
+            //     console.log(response);
+            //     console.log('====================================');
+            //     if (response.ok) {
+            //         const responseData = await response.json();
+            //         console.log("User successfully registered:", responseData);
+            //         alert("User successfully registered");
+            //         window.location="http://localhost:3000/login"
+                    
+            //     } else if(response.status === 500) {
+            //         console.error("Failed to register user");
+            //         alert("User already exists");
+            //     }
+            // } catch (error) {
+            //     console.error("Error during fetch:", error);
+            // }
+        } else {
+            // Form has errors, handle them accordingly
+            console.log("Form has errors:", newErrors);
+        }
+    };
+
+    const handleVerifyOTP = async (e) => {
+        e.preventDefault();
+        if (otpValue === usrOtpValue) {
+            alert("OTP verified successfully");
+
+            try {
+                const response = await fetch("http://localhost:5000/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+                console.log('====================================');
+                console.log(response);
+                console.log('====================================');
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log("User successfully registered:", responseData);
+                    alert("User successfully registered");
+                    window.location="http://localhost:3000/login"
+                    
+                } else if(response.status === 500) {
+                    console.error("Failed to register user");
+                    alert("User already exists");
+                }
+            } catch (error) {
+                console.error("Error during fetch:", error);
+            }
+        } else {
+            alert("Invalid OTP")
+        }
     };
 
     return (
@@ -108,7 +196,7 @@ export default function SignUp() {
 
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email</label>
-                                    <input type="email" className={`form-control ${errors.email && 'is-invalid'}`} id="email" name="email" value={formData.email} onChange={handleChange} required />
+                                    <input type="email" className={`form-control ${errors.email && 'is-invalid'}`} id="email" name="email" value={formData.email} onChange={handleChange} />
                                     {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                                 </div>
 
@@ -139,6 +227,33 @@ export default function SignUp() {
                                 <button type="submit" className="btn btn-outline-dark">Sign Up</button>
                             </form>
                         </div>
+
+                        {showModal && (
+                            <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                                <div className="modal-dialog" role="document">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">OTP Verification</h5>
+                                            <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <p>A One-Time Password (OTP) has been sent to your email id. Please enter the OTP below to complete the registration:</p>
+                                            <form>
+                                                <div className="form-group">
+                                                    <label htmlFor="otpInput">Enter OTP:</label>
+                                                    <input type="number" className="form-control" id="otpInput" onChange={handleOTPChange}/>
+                                                </div>
+                                                {otpError && <div className="text-danger">{otpError}</div>}
+                                                <button type="submit" className="btn btn-dark mt-3" onClick={handleVerifyOTP}>Verify OTP</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        )}
                     </div>
                 </div>
             </div>
