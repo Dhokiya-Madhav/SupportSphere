@@ -40,6 +40,10 @@ function mongoConnected() {
 
   app.post('/signup', async (req, res) => {
     try {
+      const existingUser = await user.findOne({ email: req.body.email });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = new user({
         username: req.body.username,
@@ -286,6 +290,47 @@ function mongoConnected() {
           return res.status(500).json({ message: "Email could not be sent", error });
         }
         res.status(200).json({ message: "Email sent successfully", info });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  function generateOTP() {
+    const digits = '0123456789';
+    let OTP = '';
+    for (let i = 0; i < 6; i++) {
+      OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    return OTP;
+  }
+
+  app.post("/acc-verify", async (req, res) => {
+    try {
+      const otp = generateOTP();
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "madhavdhokiya7069@gmail.com",
+          pass: "fipkxcmktoixpsad",
+        },
+      });
+
+      const mailOptions = {
+        from: "madhavdhokiya7069@gmail.com",
+        to: req.body.email,
+        subject: "Support-Sphere Account Verification",
+        html: `<p>Your OTP for account verification is: <strong>${otp}</strong></p>`,
+      };
+
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ message: "Email could not be sent", error });
+        }
+        res.status(200).json({ message: "Email sent successfully", info, otp });
       });
     } catch (error) {
       console.error(error);
