@@ -13,7 +13,11 @@ const port = 5000;
 const cors = require("cors");
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: 'https://support-sphere-git-master-dhokiya-madhav.vercel.app/'
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
